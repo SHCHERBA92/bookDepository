@@ -1,4 +1,4 @@
-package com.test.exercise.bookdepository.models;
+package com.test.exercise.bookdepository.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +24,7 @@ public class Author {
 
     private LocalDate localDate;
 
-    @ManyToMany()
+    @ManyToMany
     @JoinTable(
             name = "author_book",
             joinColumns = @JoinColumn(name = "author_id"),

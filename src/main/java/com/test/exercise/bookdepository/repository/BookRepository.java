@@ -1,6 +1,6 @@
 package com.test.exercise.bookdepository.repository;
 
-import com.test.exercise.bookdepository.models.Book;
+import com.test.exercise.bookdepository.model.Book;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

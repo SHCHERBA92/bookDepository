@@ -1,4 +1,4 @@
-package com.test.exercise.bookdepository.models;
+package com.test.exercise.bookdepository.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
