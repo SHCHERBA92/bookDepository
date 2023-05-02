@@ -18,5 +18,5 @@ public class BookDTO {
     private LocalDate localDate;
     private int countPage;
     private Set<Author> authors;
-    private Set<Genre> genres;
+    private Genre genre;
 }

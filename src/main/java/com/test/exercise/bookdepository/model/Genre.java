@@ -19,6 +19,6 @@ public class Genre {
 
     private String name;
 
-    @ManyToMany(mappedBy = "genres")
+    @OneToMany(mappedBy = "genre")
     private Set<Book> books;
 }

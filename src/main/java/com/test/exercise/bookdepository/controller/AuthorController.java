@@ -5,6 +5,8 @@ import com.test.exercise.bookdepository.service.AuthorService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api/v1/author")
 public class AuthorController {
@@ -19,4 +21,21 @@ public class AuthorController {
         authorService.addAuthor(authorDTO);
         return ResponseEntity.ok("Автор " + authorDTO.getName() + " добавлен");
     }
+
+    @GetMapping("all")
+    public List<AuthorDTO> getAllAuthor(){
+        return authorService.getAllAuthors();
+    }
+
+    @GetMapping("{id}")
+    public AuthorDTO getAuthorById(@PathVariable Long id){
+        return authorService.getAuthor(id);
+    }
+
+    @GetMapping()
+    public AuthorDTO getAuthorById(@RequestParam(name = "name") String name,
+                                   @RequestParam(name = "sure_name") String sureName){
+        return authorService.getAuthor(name, sureName);
+    }
+
 }
