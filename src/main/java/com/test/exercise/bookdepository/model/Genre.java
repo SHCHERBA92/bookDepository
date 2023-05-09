@@ -11,12 +11,14 @@ import java.util.Set;
 @Setter
 @Getter
 @NoArgsConstructor
+@Table(name = "genre")
 public class Genre {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = true, name = "genre_name", unique = true)
     private String name;
 
     @OneToMany(mappedBy = "genre")

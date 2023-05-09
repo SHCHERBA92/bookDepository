@@ -13,6 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @JsonRootName("genre")
 public class GenreDTO {
+
     @JsonProperty("name")
     private String name;
 }

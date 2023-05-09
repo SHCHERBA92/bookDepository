@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+//TODO: Дописать доку по рестам
+//TODO: Написать ExceptionHandle
 @RestController
 @RequestMapping("api/v1/author")
 public class AuthorController {

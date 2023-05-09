@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+//TODO: Дописать доку по методам
 @Service
 public class AuthorService {
     private final AuthorRepository authorRepository;
