@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 //TODO: Дописать доку по рестам
 //TODO: Написать ExceptionHandle
+//TODO: добавить логирование
 @RestController
 @RequestMapping("api/v1/book")
 public class BookController {

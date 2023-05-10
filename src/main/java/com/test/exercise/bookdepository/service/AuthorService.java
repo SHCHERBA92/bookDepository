@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-//TODO: Дописать доку по методам
+//TODO: добавить логирование
 @Service
 public class AuthorService {
     private final AuthorRepository authorRepository;
@@ -23,48 +23,73 @@ public class AuthorService {
         this.modelMapper = modelMapper;
     }
 
-    public void addAuthor(AuthorDTO authorDTO){
+    /**
+     * Добавление автора в БД
+     *
+     * @param authorDTO JSON автора
+     */
+    public void addAuthor(AuthorDTO authorDTO) {
         if (authorDTO == null) throw new AuthorException("Автор не был добавлен");
         Author author = modelMapper.map(authorDTO, Author.class);
         authorRepository.saveAndFlush(author);
     }
 
-    public void deleteAuthor(AuthorDTO authorDTO){
+    /**
+     * Удаление автора по полному совпадению
+     *
+     * @param authorDTO JSON автора
+     */
+    public void deleteAuthor(AuthorDTO authorDTO) {
         if (authorDTO == null) throw new AuthorException("Автор не был удалён");
         Author author = modelMapper.map(authorDTO, Author.class);
         try {
             authorRepository.delete(author);
-        }catch (RuntimeException e){
+        } catch (RuntimeException e) {
             throw new AuthorException("Не удалось найти автора " + author.getName() + " " + author.getSureName());
         }
-
     }
 
-    public void deleteAuthor(Long authorId){
+    /**
+     * Удаление автора по идентификатору
+     *
+     * @param authorId идентификатора автора
+     */
+    public void deleteAuthor(Long authorId) {
         if (authorId == null) throw new AuthorException("Автор не был удалён");
         try {
             authorRepository.deleteById(authorId);
-        }catch (EmptyResultDataAccessException e){
+        } catch (EmptyResultDataAccessException e) {
             throw new AuthorException("Не удалось найти автора по " + authorId);
         }
     }
 
-    public List<AuthorDTO> getAllAuthors(){
+    /**
+     * Метод который получает всех авторов вне зависимости от книги
+     *
+     * @return списко авторов
+     */
+    public List<AuthorDTO> getAllAuthors() {
         List<AuthorDTO> authorDTOList = null;
         try {
             authorDTOList = authorRepository.findAll().stream()
                     .map(author -> modelMapper.map(author, AuthorDTO.class))
                     .collect(Collectors.toList());
-        }catch (RuntimeException e){
+        } catch (RuntimeException e) {
             throw new AuthorException("Список авторов пуст");
         }
-        if (authorDTOList == null || authorDTOList.isEmpty()){
+        if (authorDTOList == null || authorDTOList.isEmpty()) {
             throw new AuthorException("Список авторов пуст");
         }
         return authorDTOList;
     }
 
-    public AuthorDTO getAuthor(Long authorId){
+    /**
+     * Метод в котором находят автора по его идентификатору
+     *
+     * @param authorId идентификатор автора
+     * @return Транспортную сущность автора
+     */
+    public AuthorDTO getAuthor(Long authorId) {
         Author author = authorRepository.findById(authorId)
                 .orElseThrow(() -> {
                     throw new AuthorException("Автор под id " + authorId + " не найден");
@@ -72,7 +97,14 @@ public class AuthorService {
         return modelMapper.map(author, AuthorDTO.class);
     }
 
-    public AuthorDTO getAuthor(String authorName, String authorSureName){
+    /**
+     * Метод в котором находят автора по его имени и фамилии
+     *
+     * @param authorName     имя автора
+     * @param authorSureName фамилия автора
+     * @return Транспортную сущность автора
+     */
+    public AuthorDTO getAuthor(String authorName, String authorSureName) {
         Author author = authorRepository.findAuthorByNameAndSureName(authorName, authorSureName)
                 .orElseThrow(() -> {
                     throw new AuthorException(String.format("Автор по имени %s %s не найден", authorName, authorSureName));

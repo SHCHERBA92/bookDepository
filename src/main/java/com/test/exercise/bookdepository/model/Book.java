@@ -14,6 +14,10 @@ import java.util.Set;
 @Getter
 @NoArgsConstructor
 @Table(name = "book")
+/**
+ * Делаем сущность Book главной сущностью для JPA,
+ * добавление списка Авторов и Жанра в эту сущность будет вести за собой их запись(обновление) в БД.
+ */
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

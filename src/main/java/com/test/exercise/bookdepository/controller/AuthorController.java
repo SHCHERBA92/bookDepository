@@ -9,6 +9,7 @@ import java.util.List;
 
 //TODO: Дописать доку по рестам
 //TODO: Написать ExceptionHandle
+//TODO: добавить логирование
 @RestController
 @RequestMapping("api/v1/author")
 public class AuthorController {
