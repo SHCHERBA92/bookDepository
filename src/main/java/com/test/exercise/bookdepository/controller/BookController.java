@@ -1,8 +1,8 @@
 package com.test.exercise.bookdepository.controller;
 
 import com.test.exercise.bookdepository.dto.BookDTO;
-import com.test.exercise.bookdepository.model.Book;
-import com.test.exercise.bookdepository.service.BookService;
+import com.test.exercise.bookdepository.service.add_services.AdderBookService;
+import com.test.exercise.bookdepository.service.get_services.GetterBookService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,10 +16,13 @@ import java.util.List;
 @RequestMapping("api/v1/book")
 public class BookController {
     //TODO: Дописать ресты
-    public final BookService bookService;
+    private final AdderBookService addBook;
+    private final GetterBookService getBook;
 
-    public BookController(BookService bookService) {
-        this.bookService = bookService;
+    public BookController(AdderBookService addBook,
+                          GetterBookService getBook) {
+        this.addBook = addBook;
+        this.getBook = getBook;
     }
 
     /**
@@ -30,7 +33,7 @@ public class BookController {
      */
     @PostMapping("add")
     public ResponseEntity addBook(@RequestBody BookDTO bookDTO){
-        bookService.addBook(bookDTO);
+        addBook.add(bookDTO);
         return ResponseEntity.ok("Книга была добавлена");
     }
 
@@ -40,9 +43,15 @@ public class BookController {
      * @param id часть URI запроса
      * @return Ответ со статусом 200 и телом содержащее JSON сущность книги или текстовое сообщение об ошибки.
      */
-    @GetMapping("{id}")
+    @GetMapping("get/{id}")
     public ResponseEntity getBook(@PathVariable Long id){
-        BookDTO book = bookService.getBook(id);
+        BookDTO book = getBook.getById(id);
+        return ResponseEntity.ok(book);
+    }
+
+    @GetMapping("get")
+    public ResponseEntity getBookBYTitle(@PathParam(value = "title") String title){
+        BookDTO book = getBook.getByName(title);
         return ResponseEntity.ok(book);
     }
 
@@ -51,11 +60,9 @@ public class BookController {
      *
      * @return Ответ со статусом 200 и телом содержащее список книг.
      */
-    @GetMapping()
+    @GetMapping
     public ResponseEntity getAllBooks(){
-        List<BookDTO> allBook = bookService.getAllBook();
+        List<BookDTO> allBook = getBook.getAll();
         return ResponseEntity.ok(allBook);
     }
-
-
 }

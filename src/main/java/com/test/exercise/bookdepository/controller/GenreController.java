@@ -1,7 +1,8 @@
 package com.test.exercise.bookdepository.controller;
 
 import com.test.exercise.bookdepository.dto.GenreDTO;
-import com.test.exercise.bookdepository.service.GenreService;
+import com.test.exercise.bookdepository.service.add_services.AdderGenreService;
+import com.test.exercise.bookdepository.service.get_services.GetterGenreService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,10 +18,13 @@ import java.util.List;
 //TODO: добавить логирование
 public class GenreController {
 
-    private final GenreService genreService;
+    private final GetterGenreService getterGenreService;
+    private final AdderGenreService adderGenreService;
 
-    public GenreController(GenreService genreService) {
-        this.genreService = genreService;
+    public GenreController(GetterGenreService getterGenreService,
+                           AdderGenreService adderGenreService) {
+        this.getterGenreService = getterGenreService;
+        this.adderGenreService = adderGenreService;
     }
 
     /**
@@ -31,7 +35,7 @@ public class GenreController {
      */
     @GetMapping("{id}")
     public ResponseEntity getGenreById(@PathVariable Long id){
-        GenreDTO genre = genreService.getGenre(id);
+        GenreDTO genre = getterGenreService.getById(id);
         return ResponseEntity.ok(genre);
     }
 
@@ -43,7 +47,7 @@ public class GenreController {
      */
     @GetMapping()
     public ResponseEntity getGenreById(@RequestParam(name = "name") String name){
-        GenreDTO genre = genreService.getGenre(name);
+        GenreDTO genre = getterGenreService.getByName(name);
         return ResponseEntity.ok(genre);
     }
 
@@ -53,7 +57,7 @@ public class GenreController {
      */
     @GetMapping("all")
     public ResponseEntity getAllGenre(){
-        List<GenreDTO> allGenre = genreService.getAllGenre();
+        List<GenreDTO> allGenre = getterGenreService.getAll();
         return ResponseEntity.ok(allGenre);
     }
 
@@ -65,7 +69,7 @@ public class GenreController {
      */
     @PostMapping("add")
     public ResponseEntity addGenre(@RequestBody GenreDTO genreDTO){
-        genreService.addGenre(genreDTO);
+        adderGenreService.add(genreDTO);
         return ResponseEntity.ok("Жанр " + genreDTO.getName() + " добавлен");
     }
 }

@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 //TODO: добавить логирование
+//TODO: перенести оставшиеся методы
 @Service
 public class AuthorService {
     private final AuthorRepository authorRepository;
@@ -21,17 +22,6 @@ public class AuthorService {
                          ModelMapper modelMapper) {
         this.authorRepository = authorRepository;
         this.modelMapper = modelMapper;
-    }
-
-    /**
-     * Добавление автора в БД
-     *
-     * @param authorDTO JSON автора
-     */
-    public void addAuthor(AuthorDTO authorDTO) {
-        if (authorDTO == null) throw new AuthorException("Автор не был добавлен");
-        Author author = modelMapper.map(authorDTO, Author.class);
-        authorRepository.saveAndFlush(author);
     }
 
     /**
@@ -61,54 +51,5 @@ public class AuthorService {
         } catch (EmptyResultDataAccessException e) {
             throw new AuthorException("Не удалось найти автора по " + authorId);
         }
-    }
-
-    /**
-     * Метод который получает всех авторов вне зависимости от книги
-     *
-     * @return списко авторов
-     */
-    public List<AuthorDTO> getAllAuthors() {
-        List<AuthorDTO> authorDTOList = null;
-        try {
-            authorDTOList = authorRepository.findAll().stream()
-                    .map(author -> modelMapper.map(author, AuthorDTO.class))
-                    .collect(Collectors.toList());
-        } catch (RuntimeException e) {
-            throw new AuthorException("Список авторов пуст");
-        }
-        if (authorDTOList == null || authorDTOList.isEmpty()) {
-            throw new AuthorException("Список авторов пуст");
-        }
-        return authorDTOList;
-    }
-
-    /**
-     * Метод в котором находят автора по его идентификатору
-     *
-     * @param authorId идентификатор автора
-     * @return Транспортную сущность автора
-     */
-    public AuthorDTO getAuthor(Long authorId) {
-        Author author = authorRepository.findById(authorId)
-                .orElseThrow(() -> {
-                    throw new AuthorException("Автор под id " + authorId + " не найден");
-                });
-        return modelMapper.map(author, AuthorDTO.class);
-    }
-
-    /**
-     * Метод в котором находят автора по его имени и фамилии
-     *
-     * @param authorName     имя автора
-     * @param authorSureName фамилия автора
-     * @return Транспортную сущность автора
-     */
-    public AuthorDTO getAuthor(String authorName, String authorSureName) {
-        Author author = authorRepository.findAuthorByNameAndSureName(authorName, authorSureName)
-                .orElseThrow(() -> {
-                    throw new AuthorException(String.format("Автор по имени %s %s не найден", authorName, authorSureName));
-                });
-        return modelMapper.map(author, AuthorDTO.class);
     }
 }

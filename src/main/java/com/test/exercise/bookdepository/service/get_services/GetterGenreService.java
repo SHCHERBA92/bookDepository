@@ -1,4 +1,4 @@
-package com.test.exercise.bookdepository.service;
+package com.test.exercise.bookdepository.service.get_services;
 
 import com.test.exercise.bookdepository.dto.GenreDTO;
 import com.test.exercise.bookdepository.exception.GenreException;
@@ -14,46 +14,16 @@ import java.util.stream.Collectors;
 
 //TODO: добавить логирование
 @Service
-public class GenreService {
-
-    private final static Logger LOGGER = LogManager.getLogger(GenreService.class);
+public class GetterGenreService implements GetEntity<GenreDTO>{
     private final GenreRepository genreRepository;
     private final ModelMapper modelMapper;
 
-    public GenreService(GenreRepository genreRepository,
-                        ModelMapper modelMapper) {
+    private final static Logger LOGGER = LogManager.getLogger(GetterGenreService.class);
+
+    public GetterGenreService(GenreRepository genreRepository,
+                              ModelMapper modelMapper) {
         this.genreRepository = genreRepository;
         this.modelMapper = modelMapper;
-    }
-
-    /**
-     * Метод осуществляет добавление жанра в БД.
-     *
-     * @param genreDTO JSON объект жанра
-     */
-    public void addGenre(GenreDTO genreDTO) {
-        if (genreDTO == null) throw new GenreException("Жанр не был передан");
-        Genre genre = modelMapper.map(genreDTO, Genre.class);
-        try {
-            genreRepository.saveAndFlush(genre);
-            LOGGER.info(String.format("Жанр %s был добавлен", genre.getName()));
-        } catch (RuntimeException e) {
-            throw new GenreException("Не удалось добавить Жанр");
-        }
-    }
-
-    /**
-     * Метод который позволяет извлечь из БД все жанры
-     *
-     * @return список жанров или выводит ошибку
-     */
-    public List<GenreDTO> getAllGenre() {
-        List<GenreDTO> all = genreRepository.findAll().stream()
-                .map(genre -> modelMapper.map(genre, GenreDTO.class))
-                .collect(Collectors.toList());
-        if (all == null || all.isEmpty()) throw new GenreException("Список жанров пуст");
-        LOGGER.info("Выдан список жанров");
-        return all;
     }
 
     /**
@@ -62,7 +32,8 @@ public class GenreService {
      * @param genreId идентификатор жанра
      * @return жанр по идентификатору или ошибку
      */
-    public GenreDTO getGenre(Long genreId) {
+    @Override
+    public GenreDTO getById(Long genreId) {
         if (genreId == null) throw new GenreException("Не указа id для поиска жанра");
         Genre genre = genreRepository.findById(genreId).orElseThrow(() -> new GenreException("не удалось жанр по  id " + genreId));
         return modelMapper.map(genre, GenreDTO.class);
@@ -74,8 +45,24 @@ public class GenreService {
      * @param name название жанра
      * @return жанр по названию или ошибку
      */
-    public GenreDTO getGenre(String name) {
+    @Override
+    public GenreDTO getByName(String name) {
         Genre genre = genreRepository.findByName(name).orElseThrow(() -> new GenreException("не удалось жанр по названию " + name));
         return modelMapper.map(genre, GenreDTO.class);
+    }
+
+    /**
+     * Метод который позволяет извлечь из БД все жанры
+     *
+     * @return список жанров или выводит ошибку
+     */
+    @Override
+    public List<GenreDTO> getAll() {
+        List<GenreDTO> all = genreRepository.findAll().stream()
+                .map(genre -> modelMapper.map(genre, GenreDTO.class))
+                .collect(Collectors.toList());
+        if (all == null || all.isEmpty()) throw new GenreException("Список жанров пуст");
+        LOGGER.info("Выдан список жанров");
+        return all;
     }
 }
