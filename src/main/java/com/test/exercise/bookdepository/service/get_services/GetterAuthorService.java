@@ -6,12 +6,14 @@ import com.test.exercise.bookdepository.model.Author;
 import com.test.exercise.bookdepository.repository.AuthorRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 //TODO: добавить логирование
 @Service
+@Transactional(readOnly = true)
 public class GetterAuthorService implements GetEntity<AuthorDTO>{
     private final AuthorRepository authorRepository;
     private final ModelMapper modelMapper;

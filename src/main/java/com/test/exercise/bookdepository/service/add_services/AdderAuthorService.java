@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class AdderAuthorService implements AddEntity<AuthorDTO>{
+public class AdderAuthorService implements AddEntity<AuthorDTO> {
     private final static Logger LOGGER = LogManager.getLogger(AdderAuthorService.class);
 
     private final AuthorRepository authorRepository;

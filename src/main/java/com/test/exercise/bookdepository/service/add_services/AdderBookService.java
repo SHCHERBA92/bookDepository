@@ -4,22 +4,30 @@ import com.test.exercise.bookdepository.dto.BookDTO;
 import com.test.exercise.bookdepository.exception.BookException;
 import com.test.exercise.bookdepository.model.Author;
 import com.test.exercise.bookdepository.model.Book;
-import com.test.exercise.bookdepository.model.Genre;
 import com.test.exercise.bookdepository.repository.AuthorRepository;
 import com.test.exercise.bookdepository.repository.BookRepository;
 import com.test.exercise.bookdepository.repository.GenreRepository;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-//TODO: добавить логирование
 @Service
-public class AdderBookService implements AddEntity<BookDTO>{
+@Transactional(isolation = Isolation.REPEATABLE_READ,
+        propagation = Propagation.REQUIRES_NEW,
+        rollbackFor = {SQLException.class})
+public class AdderBookService implements AddEntity<BookDTO> {
 
+    private final static Logger LOGGER = LogManager.getLogger(AdderBookService.class);
 
     private final BookRepository bookRepository;
     private final AuthorRepository authorRepository;
@@ -43,7 +51,10 @@ public class AdderBookService implements AddEntity<BookDTO>{
      */
     @Override
     public void add(BookDTO bookDTO) {
-        if (bookDTO == null) throw new BookException("Книга не задана");
+        if (bookDTO == null) {
+            LOGGER.error("Не удалось добавить книгу в БД, по причине некорректного JSON");
+            throw new BookException("Книга не задана");
+        }
         Book book = modelMapper.map(bookDTO, Book.class);
 
         String genreName = book.getGenre().getName();
@@ -53,10 +64,11 @@ public class AdderBookService implements AddEntity<BookDTO>{
         Set<Author> newAuthors = new HashSet<>();
         for (Author author : authors) {
             authorRepository.findAuthorByNameAndSureName(author.getName(), author.getSureName())
-                    .ifPresentOrElse(auth ->newAuthors.add(auth), () -> newAuthors.add(author));
+                    .ifPresentOrElse(auth -> newAuthors.add(auth), () -> newAuthors.add(author));
         }
         book.setAuthors(newAuthors);
         bookRepository.saveAndFlush(book);
+        LOGGER.info("Книга был добавлен успешно");
     }
 
     /**

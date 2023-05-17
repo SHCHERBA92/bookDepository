@@ -7,6 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -44,4 +45,30 @@ public class Book {
     @ManyToOne(cascade = {CascadeType.REFRESH, CascadeType.PERSIST, CascadeType.MERGE})
     @JoinColumn(name = "genre_id")
     private Genre genre;
+
+    public Book(String title, LocalDate localDate, int countPage, Set<Author> authors, Genre genre) {
+        this.title = title;
+        this.localDate = localDate;
+        this.countPage = countPage;
+        this.authors = authors;
+        this.genre = genre;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Book book = (Book) o;
+        return countPage == book.countPage
+                && Objects.equals(id, book.id)
+                && Objects.equals(title, book.title)
+                && Objects.equals(localDate, book.localDate)
+                && Objects.equals(authors, book.authors)
+                && Objects.equals(genre, book.genre);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, localDate, countPage, authors, genre);
+    }
 }

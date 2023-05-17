@@ -8,12 +8,14 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 //TODO: добавить логирование
 @Service
+@Transactional(readOnly = true)
 public class GetterGenreService implements GetEntity<GenreDTO>{
     private final GenreRepository genreRepository;
     private final ModelMapper modelMapper;

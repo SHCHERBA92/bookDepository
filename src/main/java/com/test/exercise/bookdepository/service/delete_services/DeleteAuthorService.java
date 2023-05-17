@@ -2,26 +2,26 @@ package com.test.exercise.bookdepository.service.delete_services;
 
 import com.test.exercise.bookdepository.exception.AuthorException;
 import com.test.exercise.bookdepository.repository.AuthorRepository;
-import com.test.exercise.bookdepository.service.add_services.AdderAuthorService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class DeleteAuthorService implements DelEntity{
+@Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
+public class DeleteAuthorService implements DelEntity {
 
     private final static Logger LOGGER = LogManager.getLogger(DeleteAuthorService.class);
 
     private final AuthorRepository authorRepository;
-    private final ModelMapper modelMapper;
 
-    public DeleteAuthorService(AuthorRepository authorRepository,
-                               ModelMapper modelMapper) {
+    public DeleteAuthorService(AuthorRepository authorRepository) {
         this.authorRepository = authorRepository;
-        this.modelMapper = modelMapper;
     }
 
     /**

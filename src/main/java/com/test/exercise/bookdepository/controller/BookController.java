@@ -2,6 +2,7 @@ package com.test.exercise.bookdepository.controller;
 
 import com.test.exercise.bookdepository.dto.BookDTO;
 import com.test.exercise.bookdepository.service.add_services.AdderBookService;
+import com.test.exercise.bookdepository.service.delete_services.DeleteBookService;
 import com.test.exercise.bookdepository.service.get_services.GetterBookService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,11 +19,14 @@ public class BookController {
     //TODO: Дописать ресты
     private final AdderBookService addBook;
     private final GetterBookService getBook;
+    private final DeleteBookService delBook;
 
     public BookController(AdderBookService addBook,
-                          GetterBookService getBook) {
+                          GetterBookService getBook,
+                          DeleteBookService delBook) {
         this.addBook = addBook;
         this.getBook = getBook;
+        this.delBook = delBook;
     }
 
     /**
@@ -64,5 +68,11 @@ public class BookController {
     public ResponseEntity getAllBooks(){
         List<BookDTO> allBook = getBook.getAll();
         return ResponseEntity.ok(allBook);
+    }
+
+    @DeleteMapping("del/{id}")
+    public ResponseEntity delBook(@PathVariable Long id){
+        delBook.deleteById(id);
+        return ResponseEntity.ok("Книга удалена");
     }
 }

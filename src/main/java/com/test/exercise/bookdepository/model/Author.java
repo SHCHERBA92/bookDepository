@@ -7,6 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -33,4 +34,28 @@ public class Author {
 
     @ManyToMany(mappedBy = "authors")
     private Set<Book> books;
+
+    public Author(String name, String sureName, LocalDate localDate, Set<Book> books) {
+        this.name = name;
+        this.sureName = sureName;
+        this.localDate = localDate;
+        this.books = books;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Author author = (Author) o;
+        return Objects.equals(id, author.id)
+                && Objects.equals(name, author.name)
+                && Objects.equals(sureName, author.sureName)
+                && Objects.equals(localDate, author.localDate)
+                && Objects.equals(books, author.books);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, sureName, localDate, books);
+    }
 }

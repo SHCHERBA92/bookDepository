@@ -6,12 +6,14 @@ import com.test.exercise.bookdepository.model.Book;
 import com.test.exercise.bookdepository.repository.BookRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 //TODO: добавить логирование
 @Service
+@Transactional(readOnly = true)
 public class GetterBookService implements GetEntity<BookDTO>{
     public final BookRepository bookRepository;
     public final ModelMapper modelMapper;
