@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-//TODO: добавить логирование
 @Service
 public class AdderGenreService implements AddEntity<GenreDTO>{
 
@@ -34,7 +33,10 @@ public class AdderGenreService implements AddEntity<GenreDTO>{
      */
     @Override
     public void add(GenreDTO genreDTO) {
-        if (genreDTO == null) throw new GenreException("Жанр не был передан");
+        if (genreDTO == null) {
+            LOGGER.error("Не был добавлен жанр по причине некорректного JSON");
+            throw new GenreException("Жанр не был передан");
+        }
         Genre genre = modelMapper.map(genreDTO, Genre.class);
         try {
             genreRepository.saveAndFlush(genre);
@@ -46,10 +48,14 @@ public class AdderGenreService implements AddEntity<GenreDTO>{
 
     @Override
     public void addAll(List<GenreDTO> listGenresDTO) {
-        if (listGenresDTO == null || listGenresDTO.isEmpty()) throw new GenreException("Жанры не был передан");
+        if (listGenresDTO == null || listGenresDTO.isEmpty()) {
+            LOGGER.error("Не были добавлены жанры по причине некорректного JSON");
+            throw new GenreException("Жанры не был передан");
+        }
         List<Genre> genres = listGenresDTO.stream()
                 .map(genreDTO -> modelMapper.map(genreDTO, Genre.class))
                 .collect(Collectors.toList());
         genreRepository.saveAllAndFlush(genres);
+        LOGGER.info("Список из жанров был добавлен");
     }
 }
